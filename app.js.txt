@@ -1,0 +1,62 @@
+// app.js - Handles authentication, post creation, and interactions
+
+const users = {}; // Simple in-memory user storage
+
+// Function to register a new user
+function register(username, password) {
+    if (users[username]) {
+        alert("Username already exists!");
+        return;
+    }
+    users[username] = password;
+    alert("Registration successful! Please log in.");
+}
+
+// Function to log in a user
+function login(username, password) {
+    if (users[username] && users[username] === password) {
+        localStorage.setItem("loggedInUser", username);
+        alert("Login successful!");
+        window.location.href = "index.html";
+    } else {
+        alert("Invalid username or password!");
+    }
+}
+
+// Function to log out a user
+function logout() {
+    localStorage.removeItem("loggedInUser");
+    alert("Logged out successfully!");
+    window.location.href = "index.html";
+}
+
+// Function to check if user is logged in
+function checkLogin() {
+    const user = localStorage.getItem("loggedInUser");
+    if (!user) {
+        alert("You must be logged in to access this page.");
+        window.location.href = "login.html";
+    }
+}
+
+// Function to handle liking posts
+function likePost(button) {
+    let likeCount = button.nextElementSibling;
+    let count = parseInt(likeCount.innerText);
+    likeCount.innerText = count + 1;
+}
+
+// Function to create a new post
+function createPost() {
+    let postText = document.getElementById("postText").value;
+    if (!postText) {
+        alert("Post cannot be empty!");
+        return;
+    }
+    let feed = document.getElementById("feed");
+    let newPost = document.createElement("div");
+    newPost.classList.add("post");
+    newPost.innerHTML = `<h3>${localStorage.getItem("loggedInUser")}</h3><p>${postText}</p><button onclick="likePost(this)">Like</button> <span class="like-count">0</span> Likes`;
+    feed.prepend(newPost);
+    document.getElementById("postText").value = "";
+}
